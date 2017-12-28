@@ -16,7 +16,7 @@ def writeRanking(column,file="./output.txt"):
     with open(file, 'a+', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=';',
                                quotechar='', quoting=csv.QUOTE_NONE,escapechar='\\')
-        csvwriter.writerow([column])
+        csvwriter.writerow(column)
 
 def readProducts(file="./productlist.txt"):
     productfile = open(file,"r")
@@ -40,12 +40,6 @@ def getURL(querytxt=""):
 emptyOutputFile()
 
 
-
-#print(getURL("toWer vodka"))
-
-# page = requests.get('https://www.google.com/search?q=tower+vodka&oq=tower+vodka')
-
-
 for keyword in readProducts():
     print("-->>>>>",keyword,"<<<<<<---")
     page = requests.get(getURL(keyword))
@@ -56,12 +50,12 @@ for keyword in readProducts():
         if 'Images' in url.text:
             urls.remove(url)
 
-    columnToWrite =keyword
+    columnToWrite =[keyword]
 
     # list the first five
     for search in urls[:5]:
-        columnToWrite += ";"+search.a['href'].split("//")[-1].split("/")[0]
-        print(search.text)
+        #columnToWrite += ";"+search.a['href'].split("//")[-1].split("/")[0]
+        columnToWrite += [search.a['href'].split("//")[-1].split("/")[0]]
         print("URL: ",search.a['href'])
         print("Domain: ",search.a['href'].split("//")[-1].split("/")[0])
 
