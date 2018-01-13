@@ -1,9 +1,29 @@
-
 import requests
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 import csv
 import os
+from time import sleep
+from random import randint
+from re import search as research
+from os.path import basename
+from functools import partial
+
+
+MAX_CHUNKS = 40
+
+
+def write_row(file_index, line):
+
+    with open("./temp/input_%d.txt" % file_index, 'a+', newline='') as file:
+        writer = csv.writer(file, delimiter=',', quotechar='\"', quoting=csv.QUOTE_NONE,escapechar='\\')
+        writer.writerow(line)
+
+
+def cleanup():
+    for f in os.listdir("./temp"):
+        if research("[output|input]_.*", f):
+            os.remove(os.path.join("./temp/", f))
 
 
 def empty_output_file(file="output.txt"):
@@ -18,14 +38,14 @@ def empty_output_file(file="output.txt"):
 def write_ranking(column, file="./output.txt"):
     with open(file, 'a+', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=';',
-                               quotechar='', quoting=csv.QUOTE_NONE,escapechar='\\')
+                               quotechar='', quoting=csv.QUOTE_NONE, escapechar='\\')
         csvwriter.writerow(column)
 
 
-def read_products(file="./productlist1.txt"):
-    productfile = open(file, "r")
+def read_products(file="./temp/input_1.txt"):
+    keyword_file = open(file, "r")
 
-    lines= productfile.read().splitlines()
+    lines = keyword_file.read().splitlines()
 
     return lines
 
@@ -35,21 +55,42 @@ def get_url(searchtext=""):
     return 'https://www.google.com/search?q=%s&oq=%s' % (parameter, parameter)
 
 
-def get_search_urls():
+def get_search_urls(file_path):
     search_urls=[]
-    for product in read_products():
+    for product in read_products(file_path):
         search_urls.append(get_url(product))
     return search_urls
 
-############################################################
+
+def add_execution_deplay():
+    sleep(randint(3, 10))
 
 
-empty_output_file()
+def find_ranking():
+    for f in os.listdir("./temp"):
+        if research("input", f):
+            url_list = get_search_urls(os.path.join("./temp/", f))
+            p = Pool(processes=5)
+            prod_x = partial(list_ranking_in_serp, source= os.path.splitext(basename(f))[0])  # prod_x has only one argument x (y is fixed to 10)
+            print(p.map(prod_x, url_list))
 
-urls = get_search_urls()
+
+        #print(p.map(list_ranking_in_serp, url_list))
 
 
-def list_ranking_in_serp(url):
+def cut_input_file():
+    with open("keyword.txt", "rt", encoding='utf8') as results:
+        r = csv.reader(results, delimiter=',', quotechar='\"')
+        idr = 1
+        for i, x in enumerate(r):
+            temp = i + 1
+            if not (temp % (MAX_CHUNKS + 1)):
+                idr += 1
+            write_row(idr, x)
+
+
+def list_ranking_in_serp(url, source='output_1'):
+    add_execution_deplay()
     page = requests.get(url)
     soup = BeautifulSoup(page.text, 'html.parser')
     links = soup.find_all('h3', class_='r')
@@ -58,18 +99,25 @@ def list_ranking_in_serp(url):
         if 'Images' in link.text:
             links.remove(link)
 
-    columnToWrite = [url]
+    column_to_write = [research('q=(.+?)&oq', url).group(1)]
 
     # list the first five
     for search in links[:10]:
-        # columnToWrite += ";"+search.a['href'].split("//")[-1].split("/")[0]
-        columnToWrite.append([search.a['href'].split("//")[-1].split("/")[0]])
+        # column_to_write += ";"+search.a['href'].split("//")[-1].split("/")[0]
+        column_to_write.append([search.a['href'].split("//")[-1].split("/")[0]])
         print("URL: ", search.a['href'])
         print("Domain: ", search.a['href'].split("//")[-1].split("/")[0])
 
-    write_ranking(columnToWrite, file="./output-"+str(os.getpid())+".txt")
+    write_ranking(column_to_write, file="./"+source+"_output-"+str(os.getpid())+".txt")
 
+
+def main():
+    #cleanup()
+
+    #cut_input_file()
+
+    find_ranking()
 
 if __name__ == '__main__':
-        p = Pool(processes=3)
-        print(p.map(list_ranking_in_serp, urls))
+
+    main()
