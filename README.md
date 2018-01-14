@@ -6,31 +6,19 @@ scrab serach results
 
 ### Related Files:
 
-     comp1.py 
-      * Copy configuration file as archive when run the program first time
-      * When find discrepancy, log in history.txt
+     serp.py 
+      * use list of product names as input 
+      * clooect ranking list of serp
+     serp_multiprocess.py
+      * use multi threads
+      * cut input to small batches
+      
 
 ### Install Steps:
 
-What things you need to install the software and how to install them
-      
-      * Copy related files to /home/hybris(or the folder you prefer)
-      
-      * Give execute permission to that script using
-          chmod a+x foo.py
-      
-      * Enter crontab editor
-      crontab -e
-      
-      * Setup cron expression:
-      50 19 * * * python hello.py 
-      command to execute define the time of execution of the job. The timing syntax has five parts:
+
 ```
-minute
-hour
-day of month
-month
-day of week
+TBD
 ```
 
 
