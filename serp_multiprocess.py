@@ -126,21 +126,22 @@ def load_dataframe_from_excel(file_path):
 def list_ranking_in_serp_df(input, source='output_1'):
     add_execution_deplay()
 
-    print(input)
-    url = ''
+    url = get_url(input[0])
     page = requests.get(url)
     soup = BeautifulSoup(page.text, 'html.parser')
     links = soup.find_all('h3', class_='r')
     # remove image result
+    column_to_write =[input[1]]
     for link in links:
         if 'Images' in link.text:
             links.remove(link)
 
-    column_to_write = [research('q=(.+?)&oq', url).group(1)]
-
+    #column_to_write.append([research('q=(.+?)&oq', url).group(1)])
+    column_to_write.append([input[0]])
     # list the first five
     for search in links[:10]:
         # column_to_write += ";"+search.a['href'].split("//")[-1].split("/")[0]
+
         column_to_write.append([search.a['href'].split("//")[-1].split("/")[0]])
         print("URL: ", search.a['href'])
         print("Domain: ", search.a['href'].split("//")[-1].split("/")[0])
@@ -148,15 +149,41 @@ def list_ranking_in_serp_df(input, source='output_1'):
     write_ranking(column_to_write, file="./"+source+"_output-"+str(os.getpid())+".txt")
 
 
+
+def list_ranking_in_serp_test(input, source='output_1'):
+    print(os.getppid())
+    print(input)
+    print(input[0])
+
+def parallel_serp(title_list,type_list):
+    # spark given number of processes
+    p = Pool(10)
+    # set each matching item into a tuple
+    job_args = [(title_list[i], type_list[i]) for i, item_a in enumerate(title_list)]
+    #print(job_args)
+    # map to pool
+    p.map(list_ranking_in_serp_df, job_args)
+
+
+
 def find_ranking_with_df():
     for f in os.listdir("./temp"):
         if research("excel_input", f):
 
             df = load_dataframe_from_excel(os.path.join("./temp/", f))
+
+            title_list = df['title'].tolist()
+            type_list = df['product_type'].tolist()
+
+
+            parallel_serp(title_list, type_list)
+
+
+            """
             p = Pool(processes=8)
             prod_x = partial(list_ranking_in_serp_df, source= os.path.splitext(basename(f))[0])  # prod_x has only one argument x (y is fixed to 10)
             print(p.map(prod_x, df['title','product_type']))
-
+            """
 
 
 def main():
