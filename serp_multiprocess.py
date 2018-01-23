@@ -126,34 +126,32 @@ def load_dataframe_from_excel(file_path):
 def list_ranking_in_serp_df(input, source='output_1'):
     add_execution_deplay()
 
-    url = get_url(input[0])
-    page = requests.get(url)
-    soup = BeautifulSoup(page.text, 'html.parser')
-    links = soup.find_all('h3', class_='r')
-    # remove image result
-    column_to_write =[input[1]]
-    for link in links:
-        if 'Images' in link.text:
-            links.remove(link)
+    try:
+        url = get_url(input[0])
+        page = requests.get(url)
+        soup = BeautifulSoup(page.text, 'html.parser')
+        links = soup.find_all('h3', class_='r')
+        # remove image result
+        column_to_write =[input[1]]
+        for link in links:
+            if 'Images' in link.text:
+                links.remove(link)
 
-    #column_to_write.append([research('q=(.+?)&oq', url).group(1)])
-    column_to_write.append([input[0]])
-    # list the first five
-    for search in links[:10]:
-        # column_to_write += ";"+search.a['href'].split("//")[-1].split("/")[0]
+        #column_to_write.append([research('q=(.+?)&oq', url).group(1)])
+        column_to_write.append([input[0]])
+        # list the first five
+        for search in links[:10]:
+            # column_to_write += ";"+search.a['href'].split("//")[-1].split("/")[0]
 
-        column_to_write.append([search.a['href'].split("//")[-1].split("/")[0]])
-        print("URL: ", search.a['href'])
-        print("Domain: ", search.a['href'].split("//")[-1].split("/")[0])
+            column_to_write.append([search.a['href'].split("//")[-1].split("/")[0]])
+            print("URL: ", search.a['href'])
+            print("Domain: ", search.a['href'].split("//")[-1].split("/")[0])
 
-    write_ranking(column_to_write, file="./"+source+"_output-"+str(os.getpid())+".txt")
+        write_ranking(column_to_write, file="./"+source+"_output-"+str(os.getpid())+".txt")
+    except Exception as e:
+        print(e)
+        pass
 
-
-
-def list_ranking_in_serp_test(input, source='output_1'):
-    print(os.getppid())
-    print(input)
-    print(input[0])
 
 def parallel_serp(title_list,type_list):
     # spark given number of processes
