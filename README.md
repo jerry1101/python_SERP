@@ -12,6 +12,8 @@ scrab serach results
      serp_multiprocess.py
       * use multi threads
       * cut input to small batches
+     serp_input_helper.py
+      * helper class of serp_multiprocess.py
      files under serp_result folder
       * result of scrabing serp
      
