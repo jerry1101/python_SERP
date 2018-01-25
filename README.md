@@ -12,6 +12,9 @@ scrab serach results
      serp_multiprocess.py
       * use multi threads
       * cut input to small batches
+     files under serp_result folder
+      * result of scrabing serp
+     
       
 
 ### Install Steps:
