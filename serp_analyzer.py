@@ -54,7 +54,7 @@ def get_top_wine_retailer(category='Beer', top_columns=['R1', 'R2', 'R3', 'R4', 
 
 def load_serp_result():
     header_list = ['type', 'keyword', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10']
-    df = pd.read_csv('./55newresult.txt', delimiter=';', names=header_list)
+    df = pd.read_csv('./allnewresult.txt', delimiter=';', names=header_list)
     return df
 
 
@@ -63,16 +63,10 @@ def load_serp_result():
 #1.
 
 def main():
-    header_list = ['type','keyword','R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10']
-    #reformat()
-    #read_serp_result()
-    #df= pd.read_csv('./55newresult.txt',delimiter=';',names= header_list)
-    #print(df.shape)
-    #print(df.iloc[:,0:7])
 
+    #reformat('./allresult.txt','./allnewresult.txt')
 
-    print('--------------------------------')
-    get_top_wine_retailer()
+    get_top_wine_retailer('Spirits')
 
 
 if __name__ == '__main__':
