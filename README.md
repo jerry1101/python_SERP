@@ -16,8 +16,7 @@ scrab serach results
       * helper class of serp_multiprocess.py
      files under serp_result folder
       * result of scrabing serp
-     serp_analyzer.py
-      * get insights
+     
      
       
 
@@ -27,17 +26,9 @@ scrab serach results
 ```
 TBD
 ```
+## [FUNCTION#2] Ranking analysis
 
+### Related Files:
 
-
-### Running the tests
-
-```
-TBD
-```
-
-### Deployment
-
-```
-TBD
-```
+     serp_analyzer.py
+      * get insights
