@@ -16,6 +16,8 @@ scrab serach results
       * helper class of serp_multiprocess.py
      files under serp_result folder
       * result of scrabing serp
+     serp_analyzer.py
+      * get insights
      
       
 
