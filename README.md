@@ -17,6 +17,7 @@ scrab serach results
      files under serp_result folder
       * result of scrabing serp
      
+     
       
 
 ### Install Steps:
@@ -25,17 +26,9 @@ scrab serach results
 ```
 TBD
 ```
+## [FUNCTION#2] Ranking analysis
 
+### Related Files:
 
-
-### Running the tests
-
-```
-TBD
-```
-
-### Deployment
-
-```
-TBD
-```
+     serp_analyzer.py
+      * get insights
